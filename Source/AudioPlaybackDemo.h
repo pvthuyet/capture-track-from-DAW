@@ -94,6 +94,17 @@ public:
         }
     }
 
+    void setSourceFromDAW(const AudioBuffer<float>* newSource, double sampleRate, int64 hashCode)
+    {
+        thumbnail.setSource(newSource, sampleRate, hashCode);
+
+        Range<double> newRange(0.0, thumbnail.getTotalLength());
+        scrollbar.setRangeLimits(newRange);
+        setRange(newRange);
+
+        startTimerHz(40);
+    }
+
     URL getLastDroppedFile() const noexcept { return lastFileDropped; }
 
     void setZoomFactor (double amount)
@@ -382,6 +393,14 @@ public:
        #endif
     }
 
+    void showAudioResourceFromDAW(AudioBuffer<float>& newSource, double sampleRate, int64 hashCode)
+    {
+        loadURLIntoTransport_2(newSource, sampleRate);
+
+        zoomSlider.setValue(0, dontSendNotification);
+        thumbnail->setSourceFromDAW(&newSource, sampleRate, hashCode);
+    }
+
 private:
     // if this PIP is running inside the demo runner, we'll use the shared device manager instead
    #ifndef JUCE_DEMO_RUNNER
@@ -406,6 +425,7 @@ private:
     AudioSourcePlayer audioSourcePlayer;
     AudioTransportSource transportSource;
     std::unique_ptr<AudioFormatReaderSource> currentAudioFileSource;
+    std::unique_ptr<MemoryAudioSource> currentMemoryAudioSource;
 
     std::unique_ptr<DemoThumbnailComp> thumbnail;
     Label zoomLabel                     { {}, "zoom:" };
@@ -421,6 +441,25 @@ private:
 
         zoomSlider.setValue (0, dontSendNotification);
         thumbnail->setURL (currentAudioFile);
+    }
+
+    bool loadURLIntoTransport_2(juce::AudioBuffer<float>& buffer, double sampleRate)
+    {
+        // unload the previous file source and delete it..
+        transportSource.stop();
+        transportSource.setSource(nullptr);
+        currentAudioFileSource.reset();
+        currentMemoryAudioSource.reset();
+
+        currentMemoryAudioSource = std::make_unique<MemoryAudioSource>(buffer, true);
+
+        // ..and plug it into our transport source
+        transportSource.setSource(currentMemoryAudioSource.get(),
+            32768,                   // tells it to buffer this many samples ahead
+            &thread,                 // this is the background thread to use for reading-ahead
+            sampleRate);     // allows for sample rate correction
+
+        return true;
     }
 
     bool loadURLIntoTransport (const URL& audioURL)

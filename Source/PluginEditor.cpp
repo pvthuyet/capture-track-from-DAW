@@ -13,13 +13,14 @@
 AudioWaveformsDemoAudioProcessorEditor::AudioWaveformsDemoAudioProcessorEditor (AudioWaveformsDemoAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
-    playbackDemo = std::make_unique<AudioPlaybackDemo>();
-
+    //playbackDemo = std::make_unique<AudioPlaybackDemo>();
+    recordingDemo = std::make_unique<AudioRecordingDemo>();
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
 
-    addAndMakeVisible(playbackDemo.get());
+    //addAndMakeVisible(playbackDemo.get());
 
+    addAndMakeVisible(recordingDemo.get());
     setSize (1000, 500);
 }
 

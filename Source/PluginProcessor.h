@@ -13,6 +13,9 @@
 //==============================================================================
 /**
 */
+
+class AudioWaveformsDemoAudioProcessorEditor;
+
 class AudioWaveformsDemoAudioProcessor  : public juce::AudioProcessor
                             #if JucePlugin_Enable_ARA
                              , public juce::AudioProcessorARAExtension
@@ -57,6 +60,7 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioWaveformsDemoAudioProcessor)
 };

@@ -10,7 +10,8 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "AudioPlaybackDemo.h"
+//#include "AudioPlaybackDemo.h"
+#include "AudioRecordingDemo.h"
 
 //==============================================================================
 /**
@@ -25,12 +26,15 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
-private:
+    //AudioPlaybackDemo* getAudioPlaybackDemo() { return playbackDemo.get(); }
+
+public:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     AudioWaveformsDemoAudioProcessor& audioProcessor;
 
-    std::unique_ptr<AudioPlaybackDemo> playbackDemo;
+    //std::unique_ptr<AudioPlaybackDemo> playbackDemo;
+    std::unique_ptr<AudioRecordingDemo> recordingDemo;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioWaveformsDemoAudioProcessorEditor)
 };

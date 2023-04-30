@@ -93,6 +93,11 @@ void AudioWaveformsDemoAudioProcessor::changeProgramName (int index, const juce:
 //==============================================================================
 void AudioWaveformsDemoAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    auto* editor = dynamic_cast<AudioWaveformsDemoAudioProcessorEditor*>(getActiveEditor());
+
+    if (editor)
+        editor->recordingDemo->recorder.audioDeviceAboutToStart(sampleRate);
+
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
 }
@@ -156,6 +161,37 @@ void AudioWaveformsDemoAudioProcessor::processBlock (juce::AudioBuffer<float>& b
 
         // ..do something to the data...
     }
+
+    auto ph = getPlayHead();
+
+    if (ph == nullptr)
+        return;
+
+    auto pos = ph->getPosition();
+
+    if (!pos.hasValue())
+        return;
+
+    auto isPlaying = pos->getIsPlaying();
+
+    if (!isPlaying)
+        return;
+
+    auto sr = getSampleRate();
+
+    auto* editor = dynamic_cast<AudioWaveformsDemoAudioProcessorEditor*>(getActiveEditor());
+
+    if (nullptr == editor)
+        return;
+
+    if (false == editor->recordingDemo->isOnRecording)
+        return;
+
+    MessageManager::callAsync([copyBuffer = buffer, totalNumInputChannels, this, editor]() mutable {
+        auto& recorder = editor->recordingDemo->recorder;
+        auto channelData = copyBuffer.getArrayOfWritePointers();
+        recorder.audioDeviceIOCallbackWithContext(channelData, totalNumInputChannels, nullptr, 0, copyBuffer.getNumSamples());
+        });
 }
 
 //==============================================================================
