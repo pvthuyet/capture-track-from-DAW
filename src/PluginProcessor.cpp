@@ -10,7 +10,7 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-AudioWaveformsDemoAudioProcessor::AudioWaveformsDemoAudioProcessor()
+SaigonAudioProcessor::SaigonAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
      : AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
@@ -24,17 +24,17 @@ AudioWaveformsDemoAudioProcessor::AudioWaveformsDemoAudioProcessor()
 {
 }
 
-AudioWaveformsDemoAudioProcessor::~AudioWaveformsDemoAudioProcessor()
+SaigonAudioProcessor::~SaigonAudioProcessor()
 {
 }
 
 //==============================================================================
-const juce::String AudioWaveformsDemoAudioProcessor::getName() const
+const juce::String SaigonAudioProcessor::getName() const
 {
     return JucePlugin_Name;
 }
 
-bool AudioWaveformsDemoAudioProcessor::acceptsMidi() const
+bool SaigonAudioProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
     return true;
@@ -43,7 +43,7 @@ bool AudioWaveformsDemoAudioProcessor::acceptsMidi() const
    #endif
 }
 
-bool AudioWaveformsDemoAudioProcessor::producesMidi() const
+bool SaigonAudioProcessor::producesMidi() const
 {
    #if JucePlugin_ProducesMidiOutput
     return true;
@@ -52,7 +52,7 @@ bool AudioWaveformsDemoAudioProcessor::producesMidi() const
    #endif
 }
 
-bool AudioWaveformsDemoAudioProcessor::isMidiEffect() const
+bool SaigonAudioProcessor::isMidiEffect() const
 {
    #if JucePlugin_IsMidiEffect
     return true;
@@ -61,55 +61,50 @@ bool AudioWaveformsDemoAudioProcessor::isMidiEffect() const
    #endif
 }
 
-double AudioWaveformsDemoAudioProcessor::getTailLengthSeconds() const
+double SaigonAudioProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
 
-int AudioWaveformsDemoAudioProcessor::getNumPrograms()
+int SaigonAudioProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int AudioWaveformsDemoAudioProcessor::getCurrentProgram()
+int SaigonAudioProcessor::getCurrentProgram()
 {
     return 0;
 }
 
-void AudioWaveformsDemoAudioProcessor::setCurrentProgram (int index)
+void SaigonAudioProcessor::setCurrentProgram (int index)
 {
 }
 
-const juce::String AudioWaveformsDemoAudioProcessor::getProgramName (int index)
+const juce::String SaigonAudioProcessor::getProgramName (int index)
 {
     return {};
 }
 
-void AudioWaveformsDemoAudioProcessor::changeProgramName (int index, const juce::String& newName)
+void SaigonAudioProcessor::changeProgramName (int index, const juce::String& newName)
 {
 }
 
 //==============================================================================
-void AudioWaveformsDemoAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void SaigonAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    auto* editor = dynamic_cast<AudioWaveformsDemoAudioProcessorEditor*>(getActiveEditor());
-
-    if (editor)
-        editor->recordingDemo->recorder.audioDeviceAboutToStart(sampleRate);
-
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
 }
 
-void AudioWaveformsDemoAudioProcessor::releaseResources()
+void SaigonAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool AudioWaveformsDemoAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool SaigonAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
   #if JucePlugin_IsMidiEffect
     juce::ignoreUnused (layouts);
@@ -134,7 +129,7 @@ bool AudioWaveformsDemoAudioProcessor::isBusesLayoutSupported (const BusesLayout
 }
 #endif
 
-void AudioWaveformsDemoAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void SaigonAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
@@ -161,59 +156,28 @@ void AudioWaveformsDemoAudioProcessor::processBlock (juce::AudioBuffer<float>& b
 
         // ..do something to the data...
     }
-
-    auto ph = getPlayHead();
-
-    if (ph == nullptr)
-        return;
-
-    auto pos = ph->getPosition();
-
-    if (!pos.hasValue())
-        return;
-
-    auto isPlaying = pos->getIsPlaying();
-
-    if (!isPlaying)
-        return;
-
-    auto sr = getSampleRate();
-
-    auto* editor = dynamic_cast<AudioWaveformsDemoAudioProcessorEditor*>(getActiveEditor());
-
-    if (nullptr == editor)
-        return;
-
-    if (false == editor->recordingDemo->isOnRecording)
-        return;
-
-    MessageManager::callAsync([copyBuffer = buffer, totalNumInputChannels, this, editor]() mutable {
-        auto& recorder = editor->recordingDemo->recorder;
-        auto channelData = copyBuffer.getArrayOfWritePointers();
-        recorder.audioDeviceIOCallbackWithContext(channelData, totalNumInputChannels, nullptr, 0, copyBuffer.getNumSamples());
-        });
 }
 
 //==============================================================================
-bool AudioWaveformsDemoAudioProcessor::hasEditor() const
+bool SaigonAudioProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-juce::AudioProcessorEditor* AudioWaveformsDemoAudioProcessor::createEditor()
+juce::AudioProcessorEditor* SaigonAudioProcessor::createEditor()
 {
-    return new AudioWaveformsDemoAudioProcessorEditor (*this);
+    return new SaigonAudioProcessorEditor (*this);
 }
 
 //==============================================================================
-void AudioWaveformsDemoAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+void SaigonAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
 }
 
-void AudioWaveformsDemoAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void SaigonAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
@@ -223,5 +187,5 @@ void AudioWaveformsDemoAudioProcessor::setStateInformation (const void* data, in
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new AudioWaveformsDemoAudioProcessor();
+    return new SaigonAudioProcessor();
 }

@@ -10,26 +10,20 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-AudioWaveformsDemoAudioProcessorEditor::AudioWaveformsDemoAudioProcessorEditor (AudioWaveformsDemoAudioProcessor& p)
+SaigonAudioProcessorEditor::SaigonAudioProcessorEditor (SaigonAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
-    //playbackDemo = std::make_unique<AudioPlaybackDemo>();
-    recordingDemo = std::make_unique<AudioRecordingDemo>();
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-
-    //addAndMakeVisible(playbackDemo.get());
-
-    addAndMakeVisible(recordingDemo.get());
-    setSize (1000, 500);
+    setSize (400, 300);
 }
 
-AudioWaveformsDemoAudioProcessorEditor::~AudioWaveformsDemoAudioProcessorEditor()
+SaigonAudioProcessorEditor::~SaigonAudioProcessorEditor()
 {
 }
 
 //==============================================================================
-void AudioWaveformsDemoAudioProcessorEditor::paint (juce::Graphics& g)
+void SaigonAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
@@ -39,7 +33,7 @@ void AudioWaveformsDemoAudioProcessorEditor::paint (juce::Graphics& g)
     g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
 }
 
-void AudioWaveformsDemoAudioProcessorEditor::resized()
+void SaigonAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..

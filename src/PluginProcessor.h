@@ -13,18 +13,15 @@
 //==============================================================================
 /**
 */
-
-class AudioWaveformsDemoAudioProcessorEditor;
-
-class AudioWaveformsDemoAudioProcessor  : public juce::AudioProcessor
+class SaigonAudioProcessor  : public juce::AudioProcessor
                             #if JucePlugin_Enable_ARA
                              , public juce::AudioProcessorARAExtension
                             #endif
 {
 public:
     //==============================================================================
-    AudioWaveformsDemoAudioProcessor();
-    ~AudioWaveformsDemoAudioProcessor() override;
+    SaigonAudioProcessor();
+    ~SaigonAudioProcessor() override;
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -60,7 +57,6 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
-
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioWaveformsDemoAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SaigonAudioProcessor)
 };
